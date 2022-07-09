@@ -64,16 +64,7 @@ public class RoomService {
         }
     }
 
-    private Cleanup applyCleanupPatch(Cleanup dbEntity, JsonPatch jsonPatch) {
-        try {
-            ObjectMapper jsonMapper = new ObjectMapper();
-            JsonNode jsonNode = jsonMapper.convertValue(dbEntity, JsonNode.class);
-            JsonNode patchedJson = jsonPatch.apply(jsonNode);
-            return jsonMapper.treeToValue(patchedJson, Cleanup.class);
-        } catch (JsonProcessingException | JsonPatchException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     public Optional<Room> deleteRoom(String id) {
         var room = repository.findById(id);
@@ -88,45 +79,4 @@ public class RoomService {
         return dbRoom;
     }
 
-    public ArrayList<Cleanup> getCleanup(String id) {
-        return repository.findById(id).get().getCleanup();
-    }
-
-    public Room createCleanup(String roomId, Cleanup cleanup) {
-        Room dbRoom = getDbRoom(roomId);
-        dbRoom.getCleanup().add(cleanup);
-        return repository.save(dbRoom);
-    }
-
-
-    public Room replaceCleanup(String roomId,String cleanupId, Cleanup newCleanup) {
-        Cleanup dbCleanup = getDbRoom(roomId).getCleanup()
-                .stream()
-                .filter(x->cleanupId.equals(x.getId()))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
-
-        Cleanup updatedCleanup = dbCleanup
-                .withDate(newCleanup.getDate())
-                .withCleaningProcedure(newCleanup.getCleaningProcedure());
-
-        Room updateRoomCleanup = getDbRoom(roomId);
-        int indexOf = updateRoomCleanup.getCleanup().indexOf(dbCleanup);
-        updateRoomCleanup.getCleanup(updateRoomCleanup.getCleanup().set(indexOf, updatedCleanup))
-
-    return repository.save();
-    }
-
-    public Room updateCleanup(String roomId, String cleanupId, JsonPatch updatedCleanup) {
-
-        return repository.findById(roomId).get()
-                .getCleanup()
-                .stream()
-                .filter(x->x.getId().equals(cleanupId))
-                .findFirst()
-                .map(dbEntity -> applyCleanupPatch(dbEntity, updatedCleanup))
-                .map(dbEntity -> replaceCleanup(roomId,cleanupId, dbEntity))
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find cleanup with id %s" + cleanupId));
-        ;
-    }
 }
