@@ -26,6 +26,9 @@ public class RoomService {
     private final RoomRepository repository;
     private final RoomDAO dao;
 
+    private final String MESSAGE = "Resource not found";
+
+
     public Page<Room> getAll(RoomFilter filter, Pageable pageable) {
         return repository.findAll(pageable);
     }
@@ -38,7 +41,7 @@ public class RoomService {
         return repository.findById(id)
                 .map(dbEntity -> applyPatch(dbEntity, updatedRoom))
                 .map(dbEntity -> replaceRoom(id, dbEntity))
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find person with id %s" + id));
+                .orElseThrow(() -> new ResourceNotFoundException(MESSAGE));
     }
 
     public Room replaceRoom(String id, Room newRoom) {
@@ -75,7 +78,7 @@ public class RoomService {
 
     private Room getDbRoom(String roomId) {
         Room dbRoom = repository.findById(roomId)
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find person with id %s".formatted(roomId)));
+                .orElseThrow(() -> new ResourceNotFoundException(MESSAGE));
         return dbRoom;
     }
 

@@ -20,6 +20,7 @@ public class CleanupService {
 
     private final RoomRepository repository;
 
+    private final String MESSAGE = "Resource not found";
 
     public ArrayList<Cleanup> getCleanup(String roomId) {
         return repository.findById(roomId).get().getCleanup();
@@ -34,7 +35,7 @@ public class CleanupService {
 
     private Room getDbRoom(String roomId) {
         Room dbRoom = repository.findById(roomId)
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find person with id %s".formatted(roomId)));
+                .orElseThrow(() -> new ResourceNotFoundException(MESSAGE));
         return dbRoom;
     }
 
@@ -47,7 +48,7 @@ public class CleanupService {
                 .findFirst()
                 .map(dbEntity -> applyCleanupPatch(dbEntity, updatedCleanup))
                 .map(dbEntity -> replaceCleanup(roomId, cleanupId, dbEntity))
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find cleanup with id %s" + cleanupId));
+                .orElseThrow(() -> new ResourceNotFoundException(MESSAGE));
 
     }
 
@@ -56,25 +57,25 @@ public class CleanupService {
                 .stream()
                 .filter(x -> cleanupId.equals(x.getId()))
                 .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MESSAGE));
 
         Cleanup updatedCleanup = dbCleanup
                 .withDate(newCleanup.getDate())
                 .withCleaningProcedure(newCleanup.getCleaningProcedure());
 
         Room updateRoomCleanup = getDbRoom(roomId);
-        int indexOf = getIndexOfCleanup(roomId, cleanupId, updateRoomCleanup);
+        int indexOf = getIndexOfCleanup(roomId, cleanupId);
         updateRoomCleanup.getCleanup().add(indexOf, updatedCleanup);
 
         return repository.save(updateRoomCleanup);
     }
 
-    private int getIndexOfCleanup(String roomId, String cleanupId, Room updateRoomCleanup) {
-        int indexOf = updateRoomCleanup.getCleanup().indexOf(getDbRoom(roomId).getCleanup()
+    private int getIndexOfCleanup(String roomId, String cleanupId) {
+        int indexOf = getRoom(roomId).getCleanup().indexOf(getDbRoom(roomId).getCleanup()
                 .stream()
                 .filter(x -> cleanupId.equals(x.getId()))
                 .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Resource not found")));
+                .orElseThrow(() -> new ResourceNotFoundException(MESSAGE)));
         return indexOf;
     }
 
@@ -90,9 +91,13 @@ public class CleanupService {
     }
 
     public void deleteCleanup(String id,String cleanupId) {
-        Room room = repository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Resource not found"));
-        int index = getIndexOfCleanup(id,cleanupId, room);
-        repository.findById(id).get().getCleanup().remove(index);
+      repository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Resource not found"))
+                .getCleanup().remove(getIndexOfCleanup(id,cleanupId));
+    }
+
+    private Room getRoom(String id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(MESSAGE));
     }
 }

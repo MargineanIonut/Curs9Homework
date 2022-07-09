@@ -19,37 +19,37 @@ public class RoomDataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception{
         List.of(
                 new Room(UUID.randomUUID().toString(), "23",2,"HotelNumberOne",
-                        new Review("Good",5, "Andrei"),
+                        new ArrayList<>(List.of(new Review(UUID.randomUUID().toString(),"Good",5, "Andrei"))),
                         new ArrayList<>(List.of(new Cleanup(UUID.randomUUID().toString(),LocalDate.now(), new CleaningProcedure("Deep clean", 120)))),
                         new RoomFacilities(true,false)),
 
                 new Room(UUID.randomUUID().toString(), "41",1,"HotelNumberOne",
-                        new Review("Ok",6, "Paul"),
+                        new ArrayList<>(List.of(new Review(UUID.randomUUID().toString(),"Ok",6, "Paul"))),
                         new ArrayList<>(List.of(new Cleanup(UUID.randomUUID().toString(),LocalDate.now(), new CleaningProcedure("Basic clean", 60)))),
                         new RoomFacilities(true,false)),
 
                 new Room(UUID.randomUUID().toString(), "3",0,"HotelNumberTwo",
-                        new Review("Best",10, "Alex"),
+                        new ArrayList<>(List.of(new Review(UUID.randomUUID().toString(),"Best",10, "Alex"))),
                         new ArrayList<>(List.of(new Cleanup(UUID.randomUUID().toString(),LocalDate.now(), new CleaningProcedure("Deep clean", 120)))),
                         new RoomFacilities(true,true)),
 
                 new Room(UUID.randomUUID().toString(), "53",5,"HotelNumberThree",
-                        new Review("Good",8, "Ana"),
+                        new ArrayList<>(List.of(new Review(UUID.randomUUID().toString(),"Good",8, "Ana"))),
                         new ArrayList<>(List.of(new Cleanup(UUID.randomUUID().toString(),LocalDate.now(), new CleaningProcedure("Basic Clean", 120)))),
                         new RoomFacilities(true,false)),
 
                 new Room(UUID.randomUUID().toString(), "35",3,"HotelNumberFour",
-                        new Review("Not Good",3, "Adrian"),
+                        new ArrayList<>(List.of(new Review(UUID.randomUUID().toString(),"Not Good",3, "Adrian"))),
                         new ArrayList<>(List.of(new Cleanup(UUID.randomUUID().toString(),LocalDate.now(), new CleaningProcedure("Basic clean", 120)))),
                         new RoomFacilities(false,false)),
 
                 new Room(UUID.randomUUID().toString(), "71",7,"HotelNumberOne",
-                        new Review("Alright",6, "Ana"),
+                        new ArrayList<>(List.of(new Review(UUID.randomUUID().toString(),"Alright",6, "Ana"))),
                         new ArrayList<>(List.of(new Cleanup(UUID.randomUUID().toString(),LocalDate.now(), new CleaningProcedure("Basic clean", 60)))),
                         new RoomFacilities(false,true)),
 
                 new Room(UUID.randomUUID().toString(), "124",10,"HotelNumberFour",
-                        new Review("Nice view",8, "Ionut"),
+                        new ArrayList<>(List.of(new Review(UUID.randomUUID().toString(),"Nice view",8, "Ionut"))),
                         new ArrayList<>(List.of(new Cleanup(UUID.randomUUID().toString(),LocalDate.now(), new CleaningProcedure("Deep clean", 120)))),
                         new RoomFacilities(true,false))
         ).forEach(repository::save);

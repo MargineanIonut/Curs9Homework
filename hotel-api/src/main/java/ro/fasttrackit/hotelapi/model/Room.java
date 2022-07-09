@@ -20,8 +20,8 @@ public class Room {
     private final String number;
     private final Integer floor;
     private final String hotelName;
-    private final Review review;
-    ArrayList<Cleanup> cleanup;
+    private final ArrayList<Review> review;
+    private final ArrayList<Cleanup> cleanup;
     private final RoomFacilities roomFacilities;
 
 }
