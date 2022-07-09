@@ -4,6 +4,9 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Document("rooms")
 @With
 @Getter
@@ -18,7 +21,7 @@ public class Room {
     private final Integer floor;
     private final String hotelName;
     private final Review review;
-    private final Cleanup cleanup;
+    ArrayList<Cleanup> cleanup;
     private final RoomFacilities roomFacilities;
 
 }

@@ -10,8 +10,8 @@ import ro.fasttrackit.hotelapi.model.Room;
 import ro.fasttrackit.hotelapi.model.RoomFilter;
 import ro.fasttrackit.hotelapi.service.RoomService;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("rooms")
@@ -39,16 +39,21 @@ public class RoomsController {
     Room deleteRoom(@PathVariable String id) {
         return service.deleteRoom(id).orElseThrow(() -> new NoSuchElementException("Id:" + id + " does not exist"));
     }
+    
 
-    @GetMapping("projection")
-    Optional<Cleanup> getProjection(RoomFilter filter) {
-        return service.getProjection(filter);
+
+    @GetMapping("cleanups/{id}")
+    ArrayList<Cleanup> getCleanupForRoom(@PathVariable String id){
+        return service.getCleanup(id);
     }
 
-    @PatchMapping("cleanup/{id}")
-    Cleanup updateCleanup(@PathVariable String id, @RequestBody JsonPatch updatedRoom) {
-        return service.updateCleanup(id, updatedRoom);
+    @PostMapping("cleanup/{id}")
+    Room createCleanup(@PathVariable String roomId, @RequestBody Cleanup cleanup){
+        return service.createCleanup(roomId, cleanup);
     }
 
-
+    @PatchMapping("cleanupPatch/{id}")
+    Room patchCleanup(@PathVariable String roomId,String cleanupId, @RequestBody JsonPatch cleanup){
+        return service.updateCleanup(roomId, cleanupId,cleanup);
+    }
 }
