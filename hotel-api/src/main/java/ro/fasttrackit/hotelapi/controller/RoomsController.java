@@ -5,13 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import ro.fasttrackit.hotelapi.model.Cleanup;
 import ro.fasttrackit.hotelapi.model.Room;
 import ro.fasttrackit.hotelapi.model.RoomFilter;
-import ro.fasttrackit.hotelapi.model.projection.RoomProjections;
 import ro.fasttrackit.hotelapi.service.RoomService;
 
-import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("rooms")
@@ -41,12 +41,14 @@ public class RoomsController {
     }
 
     @GetMapping("projection")
-    List<RoomProjections> getProjection(RoomFilter filter) {
+    Optional<Cleanup> getProjection(RoomFilter filter) {
         return service.getProjection(filter);
     }
 
     @PatchMapping("cleanup/{id}")
-    Room updateCleanup(@PathVariable String id, @RequestBody JsonPatch updatedRoom) {
+    Cleanup updateCleanup(@PathVariable String id, @RequestBody JsonPatch updatedRoom) {
         return service.updateCleanup(id, updatedRoom);
     }
+
+
 }

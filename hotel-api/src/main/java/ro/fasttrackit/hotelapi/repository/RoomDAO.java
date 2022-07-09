@@ -22,7 +22,6 @@ public class RoomDAO {
 
     public Page<Room> findBy(RoomFilter filter, Pageable pageable){
         Criteria criteria = new Criteria();
-
         Optional.ofNullable(filter.id())
                 .ifPresent(id -> criteria.and("id").is(id));
         Optional.ofNullable(filter.number())

@@ -11,20 +11,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ro.fasttrackit.hotelapi.exception.ResourceNotFoundException;
 import ro.fasttrackit.hotelapi.model.Cleanup;
-import ro.fasttrackit.hotelapi.model.RoomEntity;
 import ro.fasttrackit.hotelapi.model.RoomFilter;
 import ro.fasttrackit.hotelapi.model.Room;
-import ro.fasttrackit.hotelapi.model.projection.RoomProjections;
+import ro.fasttrackit.hotelapi.repository.CleanupRepository;
 import ro.fasttrackit.hotelapi.repository.RoomDAO;
 import ro.fasttrackit.hotelapi.repository.RoomRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class RoomService {
     private final RoomRepository repository;
+    private final CleanupRepository cleanupRepository;
     private final RoomDAO dao;
 
     public Page<Room> getAll(RoomFilter filter, Pageable pageable){
@@ -65,8 +64,8 @@ public class RoomService {
         return room;
     }
 
-    public List<RoomProjections> getProjection(RoomFilter filter) {
-        return repository.findByCleanup(filter.cleanup().date(), filter.cleanup().cleaningProcedure());
+    public Optional<Cleanup> getProjection(RoomFilter filter) {
+        return cleanupRepository.findById(filter.id());
     }
 
     public Cleanup updateCleanup(String id, JsonPatch updatedRoom) {
