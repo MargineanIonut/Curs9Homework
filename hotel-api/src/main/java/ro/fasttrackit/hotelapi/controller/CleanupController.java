@@ -8,6 +8,7 @@ import ro.fasttrackit.hotelapi.model.Room;
 import ro.fasttrackit.hotelapi.service.CleanupService;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("cleanup")
@@ -18,8 +19,8 @@ public class CleanupController {
 
 
     @GetMapping("{id}")
-    ArrayList<Cleanup> getCleanupForRoom(@PathVariable String roomId) {
-        return cleanupService.getCleanup(roomId);
+    ArrayList<Cleanup> getCleanupForRoom(@PathVariable String id) {
+        return cleanupService.getCleanup(id);
     }
 
     @PostMapping("{id}")
@@ -28,7 +29,12 @@ public class CleanupController {
     }
 
     @PatchMapping("{id}")
-    Room patchCleanup(@PathVariable String roomId, String cleanupId, @RequestBody JsonPatch cleanup) {
-        return cleanupService.updateCleanup(roomId, cleanupId, cleanup);
+    Room patchCleanup(@PathVariable String id, String cleanupId, @RequestBody JsonPatch cleanup) {
+        return cleanupService.updateCleanup(id, cleanupId, cleanup);
+    }
+
+    @DeleteMapping("/{id}")
+    void deleteCleanup(@PathVariable String id, String cleanupId) {
+        cleanupService.deleteCleanup(id, cleanupId);
     }
 }

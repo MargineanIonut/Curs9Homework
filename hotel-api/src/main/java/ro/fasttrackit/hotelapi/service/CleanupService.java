@@ -63,14 +63,19 @@ public class CleanupService {
                 .withCleaningProcedure(newCleanup.getCleaningProcedure());
 
         Room updateRoomCleanup = getDbRoom(roomId);
+        int indexOf = getIndexOfCleanup(roomId, cleanupId, updateRoomCleanup);
+        updateRoomCleanup.getCleanup().add(indexOf, updatedCleanup);
+
+        return repository.save(updateRoomCleanup);
+    }
+
+    private int getIndexOfCleanup(String roomId, String cleanupId, Room updateRoomCleanup) {
         int indexOf = updateRoomCleanup.getCleanup().indexOf(getDbRoom(roomId).getCleanup()
                 .stream()
                 .filter(x -> cleanupId.equals(x.getId()))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Resource not found")));
-        updateRoomCleanup.getCleanup().add(indexOf, updatedCleanup);
-
-        return repository.save(updateRoomCleanup);
+        return indexOf;
     }
 
     private Cleanup applyCleanupPatch(Cleanup dbEntity, JsonPatch jsonPatch) {
@@ -82,5 +87,12 @@ public class CleanupService {
         } catch (JsonProcessingException | JsonPatchException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void deleteCleanup(String id,String cleanupId) {
+        Room room = repository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Resource not found"));
+        int index = getIndexOfCleanup(id,cleanupId, room);
+        repository.findById(id).get().getCleanup().remove(index);
     }
 }
