@@ -1,6 +1,8 @@
 package ro.fasttrackit.hotelapi.exception;
 
-public class ResourceNotFoundException extends RuntimeException {
-    public ResourceNotFoundException(String formatted) {
-    }
+import lombok.Data;
+
+@Data
+public class ResourceNotFoundException  extends RuntimeException{
+    private final String message;
 }
