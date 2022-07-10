@@ -27,17 +27,11 @@ public class CleanupService {
     }
 
     public Room createCleanup(String roomId, Cleanup cleanup) {
-        Room dbRoom = getDbRoom(roomId);
+        Room dbRoom = getRoom(roomId);
         dbRoom.getCleanup().add(cleanup);
         return repository.save(dbRoom);
     }
 
-
-    private Room getDbRoom(String roomId) {
-        Room dbRoom = repository.findById(roomId)
-                .orElseThrow(() -> new ResourceNotFoundException(MESSAGE));
-        return dbRoom;
-    }
 
     public Room updateCleanup(String roomId, String cleanupId, JsonPatch updatedCleanup) {
 
@@ -53,7 +47,7 @@ public class CleanupService {
     }
 
     public Room replaceCleanup(String roomId, String cleanupId, Cleanup newCleanup) {
-        Cleanup dbCleanup = getDbRoom(roomId).getCleanup()
+        Cleanup dbCleanup = getRoom(roomId).getCleanup()
                 .stream()
                 .filter(x -> cleanupId.equals(x.getId()))
                 .findFirst()
@@ -63,7 +57,7 @@ public class CleanupService {
                 .withDate(newCleanup.getDate())
                 .withCleaningProcedure(newCleanup.getCleaningProcedure());
 
-        Room updateRoomCleanup = getDbRoom(roomId);
+        Room updateRoomCleanup = getRoom(roomId);
         int indexOf = getIndexOfCleanup(roomId, cleanupId);
         updateRoomCleanup.getCleanup().add(indexOf, updatedCleanup);
 
@@ -71,7 +65,7 @@ public class CleanupService {
     }
 
     private int getIndexOfCleanup(String roomId, String cleanupId) {
-        int indexOf = getRoom(roomId).getCleanup().indexOf(getDbRoom(roomId).getCleanup()
+        int indexOf = getRoom(roomId).getCleanup().indexOf(getRoom(roomId).getCleanup()
                 .stream()
                 .filter(x -> cleanupId.equals(x.getId()))
                 .findFirst()
